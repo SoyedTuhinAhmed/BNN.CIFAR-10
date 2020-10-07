@@ -16,6 +16,7 @@ def init():
 def main():
     arg_parser = ArgumentParser()
     args = arg_parser.parser.parse_args()
+    args.cuda = not args.no_cuda and torch.cuda.is_available()
 
     path_nn = "results/" + str(args.seed) + "_" + str(args.alpha)
     if args.humult != 8.0:
