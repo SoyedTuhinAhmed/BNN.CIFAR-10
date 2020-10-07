@@ -61,7 +61,7 @@ def main():
     data = LoadData(kwargs, batch_size=args.batch_size, test_batch_size=args.test_batch_size)
     nn_train = Train(model=lenet5, optimizer=optimizer, train_loader=data.train_loader, criterion=criterion,
                      cuda_arg=args.cuda, log_interval_arg=args.log_interval)
-    test = Test()
+    test = Test(model=lenet5, cuda_args=args.cuda, criterion=criterion, test_loader=data.test_loader)
 
     """
                                                 run training
