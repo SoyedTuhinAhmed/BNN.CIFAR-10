@@ -53,7 +53,7 @@ def main():
     """
                                                 initialize
     """
-    lenet5 = BinaryLeNet5()
+    lenet5 = BinaryLeNet5(args.humult)
 
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     optimizer = optim.Adam(lenet5.parameters(), lr=args.lr)

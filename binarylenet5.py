@@ -4,10 +4,9 @@ from models.binarized_modules import *
 
 
 class BinaryLeNet5(nn.Module):
-    def __init__(self, arg_pass):
+    def __init__(self, humult):
         super(BinaryLeNet5, self).__init__()
-        self.arg_pass = arg_pass
-        self.infl_ratio = self.arg_pass.args.humult  # Hidden unit multiplier, how many hidden unit yot waht to have
+        self.infl_ratio = humult  # Hidden unit multiplier, how many hidden unit yot waht to have
 
         self.conv1 = BinarizeConv2d(3, 6, kernel_size=5, stride=1, padding=0,
                                     bias=True)  # binarize the convolution layer
