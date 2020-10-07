@@ -1,23 +1,19 @@
-from covnet import *
-from argument_parser import *
-import torch.nn as nn
-import torch.optim
-from load_data import *
 from torch.autograd import Variable
 
 
 class Train():
-    def __init__(self):
-        self.model = CovNet()
-        self.data_loader = LoadData()
-        self.argparse = ArgumentParser()
-        self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.argparse.args.lr)
+    def __init__(self, model, optimizer, criterion, cuda_arg, log_interval_arg, train_loader):
+        self.model = model
+        self.train_loader = train_loader
+        self.cuda_arg = cuda_arg
+        self.criterion = criterion
+        self.optimizer = optimizer
+        self.log_interval_arg = log_interval_arg
 
     def train(self, epoch):
         self.model.train()
-        for batch_idx, (data, target) in enumerate(self.data_loader.train_loader):
-            if self.argparse.cuda:
+        for batch_idx, (data, target) in enumerate(self.train_loader):
+            if self.cuda_arg:
                 data, target = data.cuda(), target.cuda()
             data, target = Variable(data), Variable(target)
             self.optimizer.zero_grad()
@@ -41,7 +37,7 @@ class Train():
                 if hasattr(p, 'org'):
                     p.org.copy_(p.data.clamp_(-1, 1))
 
-            if self.argparse.args.log_interval > 0 and batch_idx % self.argparse.args.log_interval == 0:
+            if self.log_interval_arg > 0 and batch_idx % self.log_interval_arg == 0:
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(self.train_loader.dataset),
                            100. * batch_idx / len(self.train_loader), loss.data.item()))
