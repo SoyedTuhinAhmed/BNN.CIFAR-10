@@ -44,8 +44,7 @@ def main():
         os.mkdir(path_nn)
 
     torch.manual_seed(args.seed)
-    if args.cuda:
-        torch.cuda.manual_seed(args.seed)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 
@@ -55,10 +54,15 @@ def main():
     """
     lenet5 = BinaryLeNet5(args.humult)
 
+    if args.cuda:
+        torch.cuda.manual_seed(args.seed)
+        lenet5.to(device)  # if CUDA available then run on GPU otherwise on CPU
+
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     optimizer = optim.Adam(lenet5.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
     data = LoadData(kwargs, batch_size=args.batch_size, test_batch_size=args.test_batch_size)
+    data.cifar10()
     nn_train = Train(model=lenet5, optimizer=optimizer, train_loader=data.train_loader, criterion=criterion,
                      cuda_arg=args.cuda, log_interval_arg=args.log_interval)
     test = Test(model=lenet5, cuda_args=args.cuda, criterion=criterion, test_loader=data.test_loader)

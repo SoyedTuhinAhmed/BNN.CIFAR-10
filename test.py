@@ -32,13 +32,14 @@ class Test():
                 params = list(self.model.parameters())
                 weights = params[0]
 
-                test_loss += self.criterion(output, target, weights).item()  # sum up batch loss
+                # test_loss += self.criterion(output, target, weights).item()  # sum up batch loss
+                test_loss += self.criterion(output, target).item()  # sum up batch loss
                 pred = output.data.max(1, keepdim=True)[1]  # get the index of the max log-probability
                 correct += pred.eq(target.data.view_as(pred)).cpu().sum()
 
         test_loss /= len(self.test_loader.dataset)
         test_accuracy = 100. * correct / len(self.test_loader.dataset)
-        test_ones = Test.ones()
+        test_ones = self.ones()
         print('Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%), Ones: {:.1f}'.format(
             test_loss, correct, len(self.test_loader.dataset),
             test_accuracy,

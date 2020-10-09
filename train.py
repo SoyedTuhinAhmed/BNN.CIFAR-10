@@ -15,6 +15,7 @@ class Train():
         for batch_idx, (data, target) in enumerate(self.train_loader):
             if self.cuda_arg:
                 data, target = data.cuda(), target.cuda()
+
             data, target = Variable(data), Variable(target)
             self.optimizer.zero_grad()
             output = self.model(data)
@@ -22,7 +23,8 @@ class Train():
             params = list(self.model.parameters())
             weights = (params[0])
 
-            loss = self.criterion(output, target, weights)
+            # loss = self.criterion(output, target, weights) #for custom loss function prpposed in the paper
+            loss = self.criterion(output, target)
 
             # if epoch%40==0:
             #    optimizer.param_groups[0]['lr']=optimizer.param_groups[0]['lr']*0.1
