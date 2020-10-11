@@ -1,4 +1,6 @@
 from torch.autograd import Variable
+import torch
+from utils import progress_bar
 
 
 class Train():
@@ -45,3 +47,26 @@ class Train():
                            100. * batch_idx / len(self.train_loader), loss.data.item()))
 
             # list(model.parameters())[0] -= 0.001
+        
+    def another_train(self, epoch):
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        print('\nEpoch: %d' % epoch)
+        self.model.train()
+        train_loss = 0
+        correct = 0
+        total = 0
+        for batch_idx, (inputs, targets) in enumerate(self.train_loader):
+            inputs, targets = inputs.to(device), targets.to(device)
+            self.optimizer.zero_grad()
+            outputs = self.model(inputs)
+            loss = self.criterion(outputs, targets)
+            loss.backward()
+            self.optimizer.step()
+
+            train_loss += loss.item()
+            _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
+
+            progress_bar(batch_idx, len(self.train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+                        % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))

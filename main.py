@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.optim as optim
 from argument_parser import *
 from binarylenet5 import *
+from lenet5 import *
+from alexnet import *
 from train import *
 from test import *
 from load_data import *
@@ -53,6 +55,8 @@ def main():
                                                 initialize
     """
     lenet5 = BinaryLeNet5(args.humult)
+    # lenet5 = LeNet5(args.humult)
+    # lenet5 = AlexNet()
 
     if args.cuda:
         torch.cuda.manual_seed(args.seed)
@@ -75,10 +79,11 @@ def main():
     for epoch in range(1, args.epochs + 1):
         print('Epoch: ' + str(epoch) + "  ", end='')
 
-        nn_train.train(epoch)
+        nn_train.another_train(epoch)
         test_accuracy, test_ones = test.nn_test()
-        # if epoch % 40 == 0:
-        #    optimizer.param_groups[0]['lr'] = optimizer.param_groups[0]['lr'] * 0.1
+
+        if epoch % 10 == 0:
+           optimizer.param_groups[0]['lr'] = optimizer.param_groups[0]['lr'] * 0.1
 
         best_ones = list(lenet5.parameters())[0].size(0) * list(lenet5.parameters())[0].size(1)
 
