@@ -3,8 +3,6 @@ import torch.nn as nn
 import torch.optim as optim
 from argument_parser import *
 from binarylenet5 import *
-from lenet5 import *
-from alexnet import *
 from train import *
 from test import *
 from load_data import *
